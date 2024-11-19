@@ -26,6 +26,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "nyaadanbou-plugin-template"
+rootProject.name = "toolbox"
 
-include(":api")
+include("plugin-paper")
