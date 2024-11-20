@@ -1,2 +1,4 @@
 ender_dragon:
   dropped_exp: 200
+hotfix:
+  reset_invulnerable_on_join: true

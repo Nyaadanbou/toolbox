@@ -1,29 +1,47 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-import net.minecrell.pluginyml.paper.PaperPluginDescription.RelativeLoadOrder
+import net.minecrell.pluginyml.paper.PaperPluginDescription.*
 
 plugins {
-    id("toolbox-conventions.commons")
     id("nyaadanbou-conventions.repositories")
     id("nyaadanbou-conventions.copy-jar")
+    id("toolbox-conventions.commons")
     alias(libs.plugins.pluginyml.paper)
 }
 
 group = "cc.mewcraft.toolbox"
-version = "1.0.0-SNAPSHOT"
+version = "0.0.1-SNAPSHOT"
 
 dependencies {
-    // server
-    compileOnly(local.paper)
-    compileOnly(local.helper)
-
+    implementation(project(":common", configuration = "shadow"))
+    implementation(local.commons.collections)
+    implementation(local.commons.provider)
+    implementation(platform(libs.bom.configurate.yaml))
+    implementation(platform(libs.bom.configurate.kotlin))
     implementation(platform(libs.bom.cloud.paper))
     implementation(platform(libs.bom.cloud.kotlin)) {
         exclude("org.jetbrains.kotlin")
         exclude("org.jetbrains.kotlinx")
     }
+    implementation(platform(local.koin.bom))
+    implementation(local.koin.core) {
+        exclude("org.jetbrains.kotlin")
+    }
+    implementation(local.koin.core.coroutines) {
+        exclude("org.jetbrains.kotlin")
+        exclude("org.jetbrains.kotlinx")
+    }
+
+    testImplementation(local.koin.test) { exclude("org.jetbrains.kotlin") }
+    testImplementation(local.koin.test.junit5) { exclude("org.jetbrains.kotlin") }
+
+    compileOnly(local.paper)
+    compileOnly(local.helper)
 }
 
 tasks {
+    shadowJar {
+        relocate("org.spongepowered.configurate", "cc.mewcraft.wakame.external.config")
+    }
     copyJar {
         environment = "paper"
         jarFileName = "Toolbox-${project.version}.jar"

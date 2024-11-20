@@ -1,17 +1,13 @@
 package cc.mewcraft.toolbox.util
 
-import cc.mewcraft.toolbox.event.ToolboxReloadEvent
+import cc.mewcraft.toolbox.plugin.event.ToolboxReloadEvent
 import cc.mewcraft.toolbox.plugin
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-fun <T> reloadable(
-    loader: () -> T,
-) = Reloadable(loader)
-
-class Reloadable<T>(
+class ReloadableProperty<T>(
     private val loader: () -> T,
 ) : ReadOnlyProperty<Any?, T> {
     private var value: T? = null

@@ -1,4 +1,4 @@
-package cc.mewcraft.toolbox.event
+package cc.mewcraft.toolbox.plugin.event
 
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList

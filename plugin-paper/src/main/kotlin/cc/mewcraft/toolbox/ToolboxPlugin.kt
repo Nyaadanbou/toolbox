@@ -1,35 +1,71 @@
 package cc.mewcraft.toolbox
 
 import cc.mewcraft.toolbox.command.CommandManager
-import cc.mewcraft.toolbox.enderdragon.EnderDragonDeathListener
-import cc.mewcraft.toolbox.event.ToolboxReloadEvent
+import cc.mewcraft.toolbox.config.Configs
+import cc.mewcraft.toolbox.enderdragon.enderDragonModule
+import cc.mewcraft.toolbox.enderdragon.listener.EnderDragonListener
+import cc.mewcraft.toolbox.hotfix.hotfixModule
+import cc.mewcraft.toolbox.hotfix.listener.HotfixListener
+import cc.mewcraft.toolbox.networkfilter.networkFilterModule
+import cc.mewcraft.toolbox.plugin.event.ToolboxReloadEvent
+import cc.mewcraft.toolbox.plugin.pluginModule
 import me.lucko.helper.plugin.KExtendedJavaPlugin
-import org.bukkit.event.HandlerList
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.slf4j.Logger
 
-class ToolboxPlugin : KExtendedJavaPlugin() {
+val plugin: ToolboxPlugin
+    get() = ToolboxPlugin.instance ?: error("Plugin is not initialized yet.")
+
+val logger: Logger
+    get() = plugin.slF4JLogger
+
+class ToolboxPlugin : KExtendedJavaPlugin(), KoinComponent {
     companion object {
         internal var instance: ToolboxPlugin? = null
     }
 
+    override suspend fun load() {
+        startKoin {
+            modules(
+                rootModule(this@ToolboxPlugin),
+                enderDragonModule(),
+                hotfixModule(),
+                networkFilterModule(),
+                pluginModule(),
+            )
+        }
+    }
+
     override suspend fun enable() {
         instance = this
-        CommandManager(this).init()
-        reload()
-        registerSuspendListener(EnderDragonDeathListener)
+
+        // 写入默认配置
+        saveResource("config.yml")
+
+        // 初始化监听器
+        registerTerminableListener(get<EnderDragonListener>())
+        registerTerminableListener(get<HotfixListener>())
+
+        // 初始化指令
+        CommandManager(this).initialize()
     }
 
     override suspend fun disable() {
         instance = null
-        HandlerList.unregisterAll(EnderDragonDeathListener)
+        stopKoin()
     }
 
     internal fun reload() {
-        saveDefaultConfig()
-        reloadConfig()
+        // 写入默认配置
+        saveResource("config.yml")
 
+        // 重载配置文件
+        Configs.reload()
+
+        // 触发重载事件
         ToolboxReloadEvent().callEvent()
     }
 }
-
-internal val plugin: ToolboxPlugin
-    get() = ToolboxPlugin.instance ?: error("Plugin is not initialized yet.")

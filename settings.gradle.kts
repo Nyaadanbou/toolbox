@@ -28,4 +28,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "toolbox"
 
+include("common")
 include("plugin-paper")
+include("plugin-velocity")

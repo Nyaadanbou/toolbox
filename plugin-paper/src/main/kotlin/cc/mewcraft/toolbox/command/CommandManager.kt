@@ -11,12 +11,13 @@ import org.incendo.cloud.paper.PaperCommandManager
 class CommandManager(
     plugin: Plugin,
 ) {
-    private val commandManager: PaperCommandManager<CommandSourceStack> = PaperCommandManager.builder()
-        .executionCoordinator(ExecutionCoordinator.asyncCoordinator<CommandSourceStack>())
+    private val commandManager: PaperCommandManager<CommandSourceStack> = PaperCommandManager
+        .builder()
+        .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
         .buildOnEnable(plugin)
 
 
-    fun init() {
+    fun initialize() {
 
         // Register commands
         with(commandManager) {
