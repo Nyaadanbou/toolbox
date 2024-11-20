@@ -44,7 +44,7 @@ tasks {
     }
     copyJar {
         environment = "paper"
-        jarFileName = "Toolbox-${project.version}.jar"
+        jarFileName = "toolbox-${project.version}.jar"
     }
 }
 
