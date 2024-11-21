@@ -1,4 +1,4 @@
-package cc.mewcraft.toolbox.enderdragon.listener
+package cc.mewcraft.toolbox.module.enderdragon.listener
 
 import cc.mewcraft.toolbox.config.ConfigProvider
 import cc.mewcraft.toolbox.config.MAIN_CONFIG

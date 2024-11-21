@@ -7,6 +7,11 @@ import cc.mewcraft.toolbox.enderdragon.listener.EnderDragonListener
 import cc.mewcraft.toolbox.hotfix.hotfixModule
 import cc.mewcraft.toolbox.hotfix.listener.HotfixListener
 import cc.mewcraft.toolbox.networkfilter.networkFilterModule
+import cc.mewcraft.toolbox.module.enderdragon.enderDragonModule
+import cc.mewcraft.toolbox.module.enderdragon.listener.EnderDragonListener
+import cc.mewcraft.toolbox.module.hotfix.hotfixModule
+import cc.mewcraft.toolbox.module.hotfix.listener.HotfixListener
+import cc.mewcraft.toolbox.module.networkfilter.networkFilterModule
 import cc.mewcraft.toolbox.plugin.event.ToolboxReloadEvent
 import cc.mewcraft.toolbox.plugin.pluginModule
 import me.lucko.helper.plugin.KExtendedJavaPlugin

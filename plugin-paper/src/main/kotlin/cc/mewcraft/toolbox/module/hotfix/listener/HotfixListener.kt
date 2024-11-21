@@ -1,4 +1,4 @@
-package cc.mewcraft.toolbox.hotfix.listener
+package cc.mewcraft.toolbox.module.hotfix.listener
 
 import cc.mewcraft.toolbox.config.ConfigProvider
 import cc.mewcraft.toolbox.config.MAIN_CONFIG
