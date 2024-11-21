@@ -37,6 +37,10 @@ dependencies {
 
     compileOnly(local.paper)
     compileOnly(local.helper)
+    compileOnly(libs.essentials) {
+        exclude("io.papermc")
+        exclude("org.spigotmc")
+    }
 }
 
 tasks {
@@ -61,6 +65,10 @@ paper {
         register("helper") {
             required = true
             load = RelativeLoadOrder.BEFORE
+        }
+        register("Essentials") {
+            required = false
+            load = RelativeLoadOrder.OMIT
         }
     }
 }

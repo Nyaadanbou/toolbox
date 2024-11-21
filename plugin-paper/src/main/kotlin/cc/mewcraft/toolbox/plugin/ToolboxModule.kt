@@ -2,17 +2,26 @@ package cc.mewcraft.toolbox.plugin
 
 import cc.mewcraft.toolbox.config.ConfigProvider
 import cc.mewcraft.toolbox.config.MAIN_CONFIG
+import cc.mewcraft.toolbox.logger
+import cc.mewcraft.toolbox.plugin
+import com.github.retrooper.packetevents.event.*
+import me.lucko.helper.terminable.Terminable
 import me.lucko.helper.terminable.TerminableConsumer
 import me.lucko.helper.terminable.composite.CompositeTerminable
+import org.bukkit.event.Listener
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 abstract class ToolboxModule(
-    val moduleName: String,
-) : TerminableConsumer {
+    moduleName: String,
+) : Terminable, TerminableConsumer, KoinComponent {
 
-    private val terminables: CompositeTerminable = CompositeTerminable.create()
+    private val moduleTerminables: CompositeTerminable = CompositeTerminable.create()
+
+    private val networkEventManager: EventManager by inject()
 
     val config: ConfigProvider = MAIN_CONFIG.node(moduleName)
-    val isEnabled: Boolean by config.entry("enabled")
+    val enabled: Boolean by config.entry("enabled")
 
     abstract fun load()
 
@@ -20,9 +29,30 @@ abstract class ToolboxModule(
 
     abstract fun disable()
 
-    abstract fun requiredPlugins(): List<String>
+    abstract fun reload()
+
+    protected fun registerBukkitListener(listener: Listener, requiredPlugin: String? = null) {
+        if (requiredPlugin != null) {
+            if (plugin.isPluginPresent(requiredPlugin)) {
+                plugin.registerTerminableListener(listener)
+            } else {
+                logger.warn("Plugin $requiredPlugin is not present, skipping listener registration")
+            }
+        } else {
+            plugin.registerTerminableListener(listener)
+        }
+    }
+
+    @Suppress("SameParameterValue")
+    protected fun registerNetworkListener(listener: PacketListener, priority: PacketListenerPriority) {
+        networkEventManager.registerListener(listener, priority)
+    }
 
     override fun <T : AutoCloseable?> bind(terminable: T & Any): T & Any {
-        return terminables.bind(terminable)
+        return moduleTerminables.bind(terminable)
+    }
+
+    override fun close() {
+        moduleTerminables.closeAndReportException()
     }
 }
