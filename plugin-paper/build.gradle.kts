@@ -30,6 +30,7 @@ dependencies {
         exclude("org.jetbrains.kotlin")
         exclude("org.jetbrains.kotlinx")
     }
+    implementation(platform(libs.bom.packetevents.spigot))
 
     testImplementation(local.koin.test) { exclude("org.jetbrains.kotlin") }
     testImplementation(local.koin.test.junit5) { exclude("org.jetbrains.kotlin") }

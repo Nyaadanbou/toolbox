@@ -2,16 +2,12 @@ package cc.mewcraft.toolbox
 
 import cc.mewcraft.toolbox.command.CommandManager
 import cc.mewcraft.toolbox.config.Configs
-import cc.mewcraft.toolbox.enderdragon.enderDragonModule
-import cc.mewcraft.toolbox.enderdragon.listener.EnderDragonListener
-import cc.mewcraft.toolbox.hotfix.hotfixModule
-import cc.mewcraft.toolbox.hotfix.listener.HotfixListener
-import cc.mewcraft.toolbox.networkfilter.networkFilterModule
 import cc.mewcraft.toolbox.module.enderdragon.enderDragonModule
 import cc.mewcraft.toolbox.module.enderdragon.listener.EnderDragonListener
 import cc.mewcraft.toolbox.module.hotfix.hotfixModule
 import cc.mewcraft.toolbox.module.hotfix.listener.HotfixListener
 import cc.mewcraft.toolbox.module.networkfilter.networkFilterModule
+import cc.mewcraft.toolbox.network.PacketEventInitializer
 import cc.mewcraft.toolbox.plugin.event.ToolboxReloadEvent
 import cc.mewcraft.toolbox.plugin.pluginModule
 import me.lucko.helper.plugin.KExtendedJavaPlugin
@@ -42,6 +38,8 @@ class ToolboxPlugin : KExtendedJavaPlugin(), KoinComponent {
                 pluginModule(),
             )
         }
+
+        PacketEventInitializer.load(this)
     }
 
     override suspend fun enable() {
@@ -56,10 +54,14 @@ class ToolboxPlugin : KExtendedJavaPlugin(), KoinComponent {
 
         // 初始化指令
         CommandManager(this).initialize()
+
+        // 初始化 PacketEvents
+        PacketEventInitializer.enable()
     }
 
     override suspend fun disable() {
         instance = null
+        PacketEventInitializer.disable()
         stopKoin()
     }
 
