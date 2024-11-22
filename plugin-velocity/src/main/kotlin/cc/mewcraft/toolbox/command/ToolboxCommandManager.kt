@@ -20,6 +20,7 @@ import kotlin.time.measureTime
 @Singleton
 class ToolboxCommandManager(
     private val injector: Injector,
+    // 需要更多依赖的话, 通过依赖注入传入
 ) : KoinComponent {
 
     companion object Shared {
@@ -38,6 +39,8 @@ class ToolboxCommandManager(
         val commandManager = childInjector.getInstance(
             Key.get(object : TypeLiteral<VelocityCommandManager<CommandSource>>() {})
         )
+
+        // 从这里开始, 注册需要的指令
 
         commandManager.buildAndRegister(ROOT_COMMAND_NAME) {
             permission(CommandPermissions.RELOAD)
