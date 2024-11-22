@@ -21,6 +21,9 @@ dependencies {
 }
 
 tasks {
+    shadowJar {
+        relocate("org.spongepowered.configurate", "cc.mewcraft.wakame.toolbox.config")
+    }
     copyJar {
         environment = "velocity"
         jarFileName = "toolbox-${project.version}.jar"

@@ -1,0 +1,18 @@
+# A list of links that will be sent to display on player pause menus (Minecraft 1.21+ clients only).
+# • Labels can be fully custom or built-in (one of 'bug_report', 'community_guidelines', 'support', 'status',
+#   'feedback', 'community', 'website', 'forums', 'news', or 'announcements').
+# • If you supply an url with a 'bug_report' label, it will be shown if the player is disconnected.
+# • Specify a set of server groups each URL should be sent on. Use '*' to show a URL to all groups.
+server_links:
+  - label: 主页
+    url: https://www.mewcraft.cc/
+  - label: 茶馆
+    url: https://bbs.mewcraft.cc/
+  - label: 百科
+    url: https://wiki.mewcraft.cc/
+  - label: 卫星大地图
+    url: https://map.mewcraft.cc/
+  - label: 加入QQ群关注最新动态!
+    url: https://qm.qq.com/q/UDn7mL7GIS
+  - label: bug_report
+    url: https://bbs.mewcraft.cc/t/tellus
