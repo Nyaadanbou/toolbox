@@ -12,7 +12,7 @@ server_links:
     url: https://wiki.mewcraft.cc/
   - label: 卫星大地图
     url: https://map.mewcraft.cc/
-  - label: 加入QQ群关注最新动态!
+  - label: QQ群
     url: https://qm.qq.com/q/UDn7mL7GIS
   - label: bug_report
     url: https://bbs.mewcraft.cc/t/tellus

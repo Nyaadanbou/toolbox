@@ -16,11 +16,11 @@ import com.velocitypowered.api.proxy.ProxyServer
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.spongepowered.configurate.CommentedConfigurationNode
-import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.reference.ConfigurationReference
 import org.spongepowered.configurate.yaml.NodeStyle
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import java.nio.file.Path
+import kotlin.io.path.createDirectories
 import kotlin.io.path.outputStream
 
 val plugin: ToolboxPlugin
@@ -50,28 +50,11 @@ class ToolboxPlugin
         internal var instance: ToolboxPlugin? = null
     }
 
-    lateinit var config: ConfigurationNode
-        private set
     lateinit var serverLinkManager: ServerLinkManager
         private set
 
-    private val configurationReference by lazy {
-        ConfigurationReference.fixed<CommentedConfigurationNode>(
-            YamlConfigurationLoader.builder()
-                .path(dataDirectory.resolve(CONFIG_FILE_NAME))
-                .build()
-        )
-    }
-
-    @Subscribe
-    fun onProxyInitialization(event: ProxyInitializeEvent): Unit {
-        instance = this@ToolboxPlugin
-
-        // 初始化配置文件
-        saveResource(CONFIG_FILE_NAME, overwrite = false)
-
-        // 初始化配置节点
-        config = YamlConfigurationLoader.builder()
+    private val configurationReference = ConfigurationReference.fixed<CommentedConfigurationNode>(
+        YamlConfigurationLoader.builder()
             .path(dataDirectory.resolve(CONFIG_FILE_NAME))
             .indent(2)
             .nodeStyle(NodeStyle.BLOCK)
@@ -84,13 +67,24 @@ class ToolboxPlugin
                 }
             }
             .build()
-            .load()
+    )
+
+    @Subscribe
+    fun onProxyInitialization(event: ProxyInitializeEvent): Unit = runBlocking {
+        instance = this@ToolboxPlugin
+
+        // 初始化配置文件
+        dataDirectory.createDirectories()
+        saveResource(CONFIG_FILE_NAME)
+
+        // 读取一下配置文件
+        configurationReference.load()
 
         // 初始化 managers
-        serverLinkManager = ServerLinkManager(configurationReference)
+        serverLinkManager = ServerLinkManager(configurationReference).apply(ServerLinkManager::load)
 
         // 注册 listeners
-        server.eventManager.register(this, ServerLinkListener(serverLinkManager))
+        server.eventManager.register(this@ToolboxPlugin, ServerLinkListener(serverLinkManager))
 
         // 注册 commands
         ToolboxCommandManager(injector).init()
@@ -101,7 +95,7 @@ class ToolboxPlugin
         instance = null
 
         // 取消注册 listeners
-        server.eventManager.unregisterListeners(this)
+        server.eventManager.unregisterListeners(this@ToolboxPlugin)
     }
 
     /**
@@ -118,7 +112,7 @@ class ToolboxPlugin
     }
 
     @Suppress("SameParameterValue")
-    private fun saveResource(resourceName: String, overwrite: Boolean) {
+    private fun saveResource(resourceName: String, overwrite: Boolean = false) {
         val outputPath = dataDirectory.resolve(resourceName)
         if (!overwrite && outputPath.toFile().exists()) {
             return

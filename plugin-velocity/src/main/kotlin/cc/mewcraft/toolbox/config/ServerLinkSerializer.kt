@@ -15,13 +15,13 @@ object ServerLinkSerializer : TypeSerializer<ServerLink> {
                 return@run builtInType
             }
             val customLabel = node.node("label").get<Component>()
-            customLabel
+            return@run customLabel
         }
-        val uri = node.node("uri").get<String>()
+        val url = node.node("url").get<String>()
 
         return when (labelOrType) {
-            is ServerLink.Type -> ServerLink.serverLink(labelOrType, uri)
-            is Component -> ServerLink.serverLink(labelOrType, uri)
+            is ServerLink.Type -> ServerLink.serverLink(labelOrType, url)
+            is Component -> ServerLink.serverLink(labelOrType, url)
             else -> throw IllegalArgumentException("neither valid label nor valid type: $labelOrType")
         }
     }
