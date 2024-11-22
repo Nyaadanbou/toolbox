@@ -30,17 +30,22 @@ dependencies {
         exclude("org.jetbrains.kotlin")
         exclude("org.jetbrains.kotlinx")
     }
+    implementation(platform(libs.bom.packetevents.spigot))
 
     testImplementation(local.koin.test) { exclude("org.jetbrains.kotlin") }
     testImplementation(local.koin.test.junit5) { exclude("org.jetbrains.kotlin") }
 
     compileOnly(local.paper)
     compileOnly(local.helper)
+    compileOnly(libs.essentials) {
+        exclude("io.papermc")
+        exclude("org.spigotmc")
+    }
 }
 
 tasks {
     shadowJar {
-        relocate("org.spongepowered.configurate", "cc.mewcraft.wakame.external.config")
+        relocate("org.spongepowered.configurate", "cc.mewcraft.toolbox.external.config")
     }
     copyJar {
         environment = "paper"
@@ -60,6 +65,10 @@ paper {
         register("helper") {
             required = true
             load = RelativeLoadOrder.BEFORE
+        }
+        register("Essentials") {
+            required = false
+            load = RelativeLoadOrder.OMIT
         }
     }
 }

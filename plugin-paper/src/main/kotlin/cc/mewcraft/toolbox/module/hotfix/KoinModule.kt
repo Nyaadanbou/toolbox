@@ -1,6 +1,6 @@
-package cc.mewcraft.toolbox.hotfix
+package cc.mewcraft.toolbox.module.hotfix
 
-import cc.mewcraft.toolbox.hotfix.listener.HotfixListener
+import cc.mewcraft.toolbox.module.hotfix.listener.HotfixListener
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
