@@ -25,7 +25,9 @@ class NetworkFilterModule() : ToolboxModule("network_filter") {
     lateinit var filterManager: FilterManager
         private set
 
-    private lateinit var spawnExperienceOrbTask: Task
+    // 创造经验球实体的定时任务
+    // null = 未启用
+    private var spawnExperienceOrbTask: Task? = null
 
     override fun load() {
         // no ops
@@ -48,7 +50,7 @@ class NetworkFilterModule() : ToolboxModule("network_filter") {
 
     override fun disable() {
         getKoin().getOrNull<UserManager>()?.cleanup()
-        spawnExperienceOrbTask.close()
+        spawnExperienceOrbTask?.close()
     }
 
     override fun reload() {
@@ -56,19 +58,25 @@ class NetworkFilterModule() : ToolboxModule("network_filter") {
         // ...
 
         // 重新启动定时任务
-        spawnExperienceOrbTask.close()
+        spawnExperienceOrbTask?.close()
         spawnExperienceOrbTask = startTask()
     }
 
-    private fun startTask(): Task {
+    private fun startTask(): Task? {
         val idlingExperienceAmount: Int by idlingExperienceAmount
         val idlingExperienceInterval: Long by idlingExperienceInterval
 
+        if (idlingExperienceAmount <= 0 || idlingExperienceInterval <= 0) {
+            return null
+        }
+
         // 注册定时任务
-        return Schedulers.sync().runRepeating(
+        val repeatingTask = Schedulers.sync().runRepeating(
             /* runnable = */SpawnExperienceOrbTask(userManager, idlingExperienceAmount),
             /* delayTicks = */ 100L,
             /* intervalTicks = */ idlingExperienceInterval,
         ).apply(::bind)
+
+        return repeatingTask
     }
 }

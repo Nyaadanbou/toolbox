@@ -1,22 +1,25 @@
 debug: false
+
 ender_dragon:
   dropped_exp: 200
+
 hotfix:
   reset_invulnerable_on_join: true
+
 network_filter:
   # 是否启用?
   enabled: true
-  # 进入挂机状态后给予经验球的设置.
+  # 进入挂机状态后给予经验球.
   idling_experience:
     # 经验球拥有的经验值.
     amount: 1
     # 产生经验球的间隔
     # 单位: tick
     interval: 100
-  # 不过滤这些实体产生的网络数据包.
+  # 进入挂机状态后, 不过滤这些实体产生的网络数据包.
   ignored_entity_types:
     - FISHING_HOOK
-  # 需要被过滤的网络数据包的类型.
+  # 进入挂机状态后, 需要被过滤的网络数据包的类型.
   suppressed_packet_types:
     - ACTION_BAR
     - BLOCK_ACTION
