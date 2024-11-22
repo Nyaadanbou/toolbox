@@ -45,7 +45,7 @@ dependencies {
 
 tasks {
     shadowJar {
-        relocate("org.spongepowered.configurate", "cc.mewcraft.wakame.external.config")
+        relocate("org.spongepowered.configurate", "cc.mewcraft.toolbox.external.config")
     }
     copyJar {
         environment = "paper"
